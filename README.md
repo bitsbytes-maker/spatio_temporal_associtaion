@@ -373,32 +373,13 @@ To test the statistical significance of the spatiotemporal associations in our d
 6. **Interpret Results**:
    - Since the p-value (0.02) is below the threshold of 0.05, we can conclude that the observed associations are statistically significant.
 
-### Algorithm Pseudocode:
-
-```python
-# Pseudo-code for Monte Carlo Significance Testing
-
-observed_values = calculate_confidence_support_lift(actual_data)
-random_values = []
-
-# Generate 1000 random samples
-for i in range(1000):
-    randomized_data = randomize_links(actual_data)
-    random_values.append(calculate_confidence_support_lift(randomized_data))
-
-# Calculate p-value
-p_value = sum(1 for val in random_values if val >= observed_values) / len(random_values)
-
-# If p_value < 0.05, the associations are significant
-if p_value < 0.05:
-    print("The associations are statistically significant.")
-else:
-    print("The associations are not statistically significant.")
 
 
 
 
-## References
+
+### References
 
 1. Walkikar, P., Shi, L., Tama, B.A., & Janeja, V.P. (2024). Discovery of multi-domain spatiotemporal associations. *GeoInformatica*, 28, 353–379. https://doi.org/10.1007/s10707-023-00506-4
+
 
