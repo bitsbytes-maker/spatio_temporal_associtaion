@@ -1,7 +1,7 @@
 # Spatio-Temporal Association: Anomalous Windows and Influence Score
 
 
-## 3.1 Anomalous Windows
+## Anomalous Windows
 
 An anomalous window refers to a group of spatial objects that are spatially close and share similar spatial and non-spatial attributes, demonstrating unusual behavior when compared to the rest of the data. For example:
 
@@ -11,7 +11,7 @@ An anomalous window refers to a group of spatial objects that are spatially clos
 
 Although these two phenomena (child poverty and unemployment) measure different aspects, they may overlap or be close, revealing interesting spatial relationships between them.
 
-## 3.2 Influence Distance and Influence Score
+## Influence Distance and Influence Score
 
 ### Influence Distance
 
@@ -60,7 +60,7 @@ Where:
      s_{v_{1→3}} = e^{-(1 \times (1/50))} = e^{-0.02} ≈ 0.9802
      \]
 
-## 3.3 Calculating Influence Between Anomalous Windows
+## Calculating Influence Between Anomalous Windows
 
 When comparing two anomalous windows, say **Child Poverty** and **Unemployment**, the influence score between these windows is calculated by finding the influence score between each spatial object within the windows.
 
@@ -304,4 +304,101 @@ This suggests that **L1** (Child Poverty) and **L2** (Unemployment) are more lik
 
 This algorithm helps in understanding and quantifying the relationships between different domains (e.g., child poverty and unemployment) and their anomalous windows over time, providing valuable insights into the influence dynamics between these domains.
 
----
+
+
+# Window Centers-Based Spatiotemporal Association Discovery
+
+...
+
+## Example Walkthrough
+
+This example illustrates the calculation of spatiotemporal associations for two phenomena (A and B) across two time intervals, using the window centers-based approach.
+
+### Phenomena and Data
+
+We have two phenomena:
+1. **Phenomenon A**
+   - Center at time t1: (X=35.2, Y=40.3), Influence Score = 0.8
+   - Center at time t2: (X=36.7, Y=42.1), Influence Score = 0.6
+
+2. **Phenomenon B**
+   - Center at time t1: (X=34.0, Y=39.5), Influence Score = 0.75
+   - Center at time t2: (X=37.0, Y=41.0), Influence Score = 0.65
+
+### Calculations
+
+1. **Influence Threshold** (s_min): **0.7**
+
+2. **Confidence Calculation**:
+   - At **t1**, influence score between A(t1) and B(t1) is **0.8** (above threshold).
+   - At **t2**, influence score between A(t2) and B(t2) is **0.65** (below threshold).
+   - **Confidence** = (Number of pairs above threshold) / (Total pairs) = \( \frac{1}{2} = 0.5 \)
+
+3. **Support Calculation**:
+   - **Support** = (Number of intervals with influence ≥ threshold) / (Total intervals) = \( \frac{1}{2} = 0.5 \)
+
+4. **Lift Calculation**:
+   - Probability of A (P(A)) = 0.5
+   - Probability of B (P(B)) = 0.5
+   - **Lift** = (Observed co-occurrence) / (P(A) * P(B)) = \( \frac{0.5}{0.5 \times 0.5} = 2 \)
+
+This example demonstrates how spatiotemporal association metrics are computed using window centers, yielding a quantified association between phenomena A and B.
+
+
+## Spatiotemporal Association Significance Test
+
+To test the statistical significance of the spatiotemporal associations in our data, we implement a **Monte Carlo simulation**. This technique helps us determine if the associations observed are statistically significant or just due to random chance.
+
+### Steps:
+1. **Define Null Hypothesis**: 
+   - Our null hypothesis states that the observed associations between phenomena are not significant and could occur randomly.
+
+2. **Generate Randomized Samples**:
+   - We generate 1000 randomized networks of phenomena by reshuffling the spatial links across phenomena while maintaining the data structure. This gives us 1000 "random" associations to compare against our observed results.
+
+3. **Calculate Confidence Measures for Original Data**:
+   - We calculate confidence, support, and lift for associations in the actual data. Assume, for example:
+     - **Confidence**: 0.85
+     - **Support**: 0.30
+     - **Lift**: 1.2
+
+4. **Run Simulation on Randomized Samples**:
+   - For each of the 1000 randomized samples, we compute the confidence, support, and lift values.
+   
+5. **Calculate p-value**:
+   - After obtaining all values, we calculate the p-value based on how many randomized samples exceed our original data values. For example:
+     - If only 20 out of 1000 randomized samples have confidence, support, and lift values as high as or higher than the observed values, then:
+       - p-value = 20 / 1000 = 0.02
+
+6. **Interpret Results**:
+   - Since the p-value (0.02) is below the threshold of 0.05, we can conclude that the observed associations are statistically significant.
+
+### Algorithm Pseudocode:
+
+```python
+# Pseudo-code for Monte Carlo Significance Testing
+
+observed_values = calculate_confidence_support_lift(actual_data)
+random_values = []
+
+# Generate 1000 random samples
+for i in range(1000):
+    randomized_data = randomize_links(actual_data)
+    random_values.append(calculate_confidence_support_lift(randomized_data))
+
+# Calculate p-value
+p_value = sum(1 for val in random_values if val >= observed_values) / len(random_values)
+
+# If p_value < 0.05, the associations are significant
+if p_value < 0.05:
+    print("The associations are statistically significant.")
+else:
+    print("The associations are not statistically significant.")
+
+
+
+
+## References
+
+1. Walkikar, P., Shi, L., Tama, B.A., & Janeja, V.P. (2024). Discovery of multi-domain spatiotemporal associations. *GeoInformatica*, 28, 353–379. https://doi.org/10.1007/s10707-023-00506-4
+
